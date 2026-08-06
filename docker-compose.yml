@@ -1,0 +1,31 @@
+services:
+  tour-monitor:
+    build: .
+    container_name: tour-monitor
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Moscow
+      Monitor__RunOnStart: "${RUN_ON_START:-false}"
+      Monitor__DateRangeDays: "${DATE_RANGE_DAYS:-150}"
+      Monitor__StartOffsetDays: "${START_OFFSET_DAYS:-30}"
+      Monitor__PricesPerMonth: "${PRICES_PER_MONTH:-3}"
+      Monitor__CalendarUrlBase: "${CALENDAR_URL_BASE:-http://192.168.1.6:8084}"
+      Camoufox__Version: "${CAMOUFOX_VERSION:-v152.0.4-beta.28}"
+      Camoufox__InstallDirectory: /opt/camoufox
+      Telegram__BotToken: "${TELEGRAM_BOT_TOKEN:-}"
+      Telegram__ChatId: "${TELEGRAM_CHAT_ID:-}"
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      - tour-monitor-data:/app/Data
+      - tour-monitor-camoufox:/opt/camoufox
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/hangfire"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  tour-monitor-data:
+  tour-monitor-camoufox:

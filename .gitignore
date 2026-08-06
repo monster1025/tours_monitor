@@ -1,0 +1,10 @@
+bin/
+obj/
+Data/
+*.db
+*.db-shm
+*.db-wal
+.env
+.vs/
+.idea/
+.DS_Store
