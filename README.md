@@ -43,7 +43,7 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 
 - Дашборд Hangfire (журнал задач, кнопка «Run now»): http://localhost:5000/hangfire
 - Календарь цен: http://localhost:5000/prices (список отелей → сетка дат с минимальной ценой)
-- Ежедневный скан по умолчанию в 07:30 по Москве (`Schedule:Cron`, `Schedule:TimeZoneId`)
+- Ежедневный скан по умолчанию в 09:15 по Москве (`Schedule:Cron`, `Schedule:TimeZoneId`)
 - База SQLite: `Data/tour_monitor.db` (история цен + ежедневные минимумы)
 
 ## Конфигурация
@@ -65,7 +65,7 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 | `Camoufox:Version` | `v152.0.4-beta.28` |
 | `Camoufox:InstallDirectory` | `Data/camoufox` |
 | `Camoufox:Headless` | true |
-| `Schedule:Cron` | `0 30 7 * * ?` |
+| `Schedule:Cron` | `0 15 9 * * ?` |
 | `Schedule:TimeZoneId` | `Europe/Moscow` |
 
 Ключи API и расшифровки (`LevelTravel:ApiKey`, `LevelTravel:SecretBoxKeys`) — из открытого
