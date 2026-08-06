@@ -1,9 +1,9 @@
 # TourMonitor — мониторинг туров Level.Travel
 
-Ежедневно проверяет цены на туры (9 ночей, 2 взрослых + ребёнок 5 лет) из Москвы в отели
-**Sunrise Tucana Resort** и **Posh Club By Sunrise Tucana Resort** (Макади Бей, Египет)
-на окно с +60 дней от сегодня на 90 дней вперёд и отправляет в Telegram отчёт с топом
-дешёвых дат и дельтой цен.
+Ежедневно проверяет цены на туры из Москвы (2 взрослых + ребёнок 5 лет; количество ночей —
+своё для каждого отеля) в отели **Sunrise Tucana Resort** и **Posh Club By Sunrise Tucana Resort**
+(Макади Бей, Египет) и **Riu Sri Lanka** (Шри-Ланка) на окно с +30 дней от сегодня на
+150 дней вперёд и отправляет в Telegram отчёт с топом дешёвых дат и дельтой цен.
 
 Работает напрямую с публичным веб-API level.travel (подпись запросов и расшифровка
 ответов воспроизведены с JS-бандла сайта), без партнёрского токена.
@@ -16,20 +16,24 @@
 ## Отчёт в Telegram
 
 ```
-📊 Мониторинг туров · 9 ночей, 2+1 чел, ребёнок 5 лет
-Заезды: 06.08–03.11
+📊 <b>Мониторинг туров</b> · 9 ночей, 2+1 чел, ребёнок 5 лет
+Заезды: 05.09–01.02
 
-🏝 Sunrise Tucana Resort
-📅 20.08 — 418 000 ₽ 🔻 −12% (было 475 447 ₽)
-    🍽 AI · Полулюкс · Level.Travel
-    🔗 забронировать
-📅 02.09 — 501 000 ₽ ✨ новая минималка
+🏝 <b>Sunrise Tucana Resort</b>
+🗓 <a href="http://192.168.1.6:8084/prices/9099454">календарь цен</a>
+📅 <b>Октябрь</b>
+   📅 05.10 — <b>475 447 ₽</b> 🔻 −12% (было 540 000 ₽)
+      🍽 AI · <a href="https://level.travel/package_details/…">Полулюкс</a> · Level.Travel
+   📅 06.10 — <b>501 000 ₽</b> ✨ новая минималка
+📅 <b>Ноябрь</b>
+   📅 02.11 — <b>520 000 ₽</b> 🔺 +3% (было 505 000 ₽)
 ...
 ```
 
 Секция показывается только если по отелю есть предложения. Каждый отель приходит
 **отдельным сообщением**; если сообщение длиннее лимита Telegram (4096 символов), оно
-автоматически разбивается на несколько.
+автоматически разбивается на несколько. В отчёте — до `PricesPerMonth` дешёвых дат
+на каждый месяц, тип номера — ссылка на бронирование, рядом дельта к прошлому скану.
 
 ## Как запустить
 
@@ -41,8 +45,9 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
   --Telegram__BotToken=<токен> --Telegram__ChatId=<id>
 ```
 
-- Дашборд Hangfire (журнал задач, кнопка «Run now»): http://localhost:5000/hangfire
-- Календарь цен: http://localhost:5000/prices (список отелей → сетка дат с минимальной ценой)
+- Дашборд Hangfire (журнал задач, кнопка «Run now»): http://localhost:5199/hangfire
+- Календарь цен: http://localhost:5199/prices (список отелей → сетка дат с ценой из
+  последнего скана, диапазоном минимальной цены по датам сканирования и дельтой)
 - Ежедневный скан по умолчанию в 09:15 по Москве (`Schedule:Cron`, `Schedule:TimeZoneId`)
 - База SQLite: `Data/tour_monitor.db` (история цен + ежедневные минимумы)
 
@@ -59,7 +64,7 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 | `Monitor:DateRangeDays` | 150 |
 | `Monitor:StartOffsetDays` | 30 (окно начинается с +30 дней от сегодня) |
 | `Monitor:PricesPerMonth` | 3 (сколько дешёвых дат показывать в отчёте для каждого месяца) |
-| `Monitor:CalendarUrlBase` | пусто (ссылка на календарь цен в отчёте; `http://192.168.1.6:8084` на хосте) |
+| `Monitor:CalendarUrlBase` | `http://192.168.1.6:8084` (ссылка на календарь цен в отчёте) |
 | `Monitor:RunOnStart` | false |
 | `Monitor:MaxParallelDates` | 5 (даты сканируются параллельно) |
 | `Camoufox:Version` | `v152.0.4-beta.28` |
@@ -70,6 +75,9 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 
 Ключи API и расшифровки (`LevelTravel:ApiKey`, `LevelTravel:SecretBoxKeys`) — из открытого
 JS-бандла сайта; менять не нужно.
+
+У каждого отеля (`Monitor:Hotels`) свои направление и ночи: `ToCity`, `ToCountry`, `Nights`
+(например, Riu Sri Lanka — `"ToCity": "Sri Lanka", "ToCountry": "LK", "Nights": 9`).
 
 ## Docker
 
@@ -101,6 +109,6 @@ LT_LIVE_TESTS=1 dotnet test       # + живые проверки против a
 - `src/TourMonitor/Camoufox/` — установка Camoufox (скачивание из релизов), сессия
   браузера и fetch-транспорт через Playwright
 - `src/TourMonitor/Storage/PriceStore.cs` — SQLite: история цен, ежедневные минимумы
-- `src/TourMonitor/Jobs/DailyScanJob.cs` — сам скан: 90 дат × отели из конфига, параллельно
+- `src/TourMonitor/Jobs/DailyScanJob.cs` — сам скан: 150 дат × отели из конфига, параллельно
 - `src/TourMonitor/Notifications/` — Telegram и сборка отчёта
 - `tests/TourMonitor.Tests/` — юнит- и интеграционные тесты
