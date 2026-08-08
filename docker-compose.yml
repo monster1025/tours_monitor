@@ -1,6 +1,7 @@
 services:
   tour-monitor:
     build: .
+    image: gitea.yandex5.ru/monster/tours_monitor:master
     container_name: tour-monitor
     restart: unless-stopped
     environment:
