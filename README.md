@@ -2,7 +2,7 @@
 
 Ежедневно проверяет цены на туры из Москвы (2 взрослых + ребёнок 5 лет; количество ночей —
 своё для каждого отеля) в отели **Sunrise Tucana Resort** и **Posh Club By Sunrise Tucana Resort**
-(Макади Бей, Египет) и **Riu Sri Lanka** (Шри-Ланка) на окно с +30 дней от сегодня на
+(Макади Бей, Египет) и **Riu Sri Lanka** (Шри-Ланка) и **Rixos Premium Alamein** (Эль-Аламейн, Египет) на окно с +30 дней от сегодня на
 150 дней вперёд и отправляет в Telegram отчёт с топом дешёвых дат и дельтой цен.
 
 Работает напрямую с публичным веб-API level.travel (подпись запросов и расшифровка
@@ -59,7 +59,7 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 | Ключ | По умолчанию |
 |---|---|
 | `Telegram:BotToken`, `Telegram:ChatId` | пусто (отчёт не отправляется) |
-| `Monitor:Hotels` | Sunrise Tucana 9099454, Posh Club 9151153, Riu Sri Lanka 9067553 |
+| `Monitor:Hotels` | Sunrise Tucana 9099454, Posh Club 9151153, Riu Sri Lanka 9067553, Rixos Premium Alamein 9148149 |
 | `Monitor:Adults`, `Monitor:KidsAges` | 2, `[5]` |
 | `Monitor:DateRangeDays` | 150 |
 | `Monitor:StartOffsetDays` | 30 (окно начинается с +30 дней от сегодня) |
