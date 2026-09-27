@@ -7,8 +7,8 @@ services:
     environment:
       TZ: Europe/Moscow
       Monitor__RunOnStart: "${RUN_ON_START:-false}"
-      Monitor__DateRangeDays: "${DATE_RANGE_DAYS:-150}"
-      Monitor__StartOffsetDays: "${START_OFFSET_DAYS:-30}"
+      Monitor__DateRangeDays: "${DATE_RANGE_DAYS:-365}"
+      Monitor__StartOffsetDays: "${START_OFFSET_DAYS:-0}"
       Monitor__PricesPerMonth: "${PRICES_PER_MONTH:-3}"
       Monitor__CalendarUrlBase: "${CALENDAR_URL_BASE:-http://192.168.1.6:8084}"
       Camoufox__Version: "${CAMOUFOX_VERSION:-v152.0.4-beta.28}"

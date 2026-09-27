@@ -2,8 +2,8 @@
 
 Ежедневно проверяет цены на туры из Москвы (2 взрослых + ребёнок 5 лет; количество ночей —
 своё для каждого отеля) в отели **Sunrise Tucana Resort** и **Posh Club By Sunrise Tucana Resort**
-(Макади Бей, Египет) и **Riu Sri Lanka** (Шри-Ланка) и **Rixos Premium Alamein** (Эль-Аламейн, Египет) на окно с +30 дней от сегодня на
-150 дней вперёд и отправляет в Telegram отчёт с топом дешёвых дат и дельтой цен.
+(Макади Бей, Египет) и **Riu Sri Lanka** (Шри-Ланка) на окно с текущей даты на
+365 дней (год) вперёд и отправляет в Telegram отчёт с топом дешёвых дат и дельтой цен.
 
 Работает напрямую с публичным веб-API level.travel (подпись запросов и расшифровка
 ответов воспроизведены с JS-бандла сайта), без партнёрского токена.
@@ -59,10 +59,10 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 | Ключ | По умолчанию |
 |---|---|
 | `Telegram:BotToken`, `Telegram:ChatId` | пусто (отчёт не отправляется) |
-| `Monitor:Hotels` | Sunrise Tucana 9099454, Posh Club 9151153, Riu Sri Lanka 9067553, Rixos Premium Alamein 9148149 |
+| `Monitor:Hotels` | Sunrise Tucana 9099454, Posh Club 9151153, Riu Sri Lanka 9067553 |
 | `Monitor:Adults`, `Monitor:KidsAges` | 2, `[5]` |
-| `Monitor:DateRangeDays` | 150 |
-| `Monitor:StartOffsetDays` | 30 (окно начинается с +30 дней от сегодня) |
+| `Monitor:DateRangeDays` | 365 |
+| `Monitor:StartOffsetDays` | 0 (окно начинается с сегодняшнего дня) |
 | `Monitor:PricesPerMonth` | 3 (сколько дешёвых дат показывать в отчёте для каждого месяца) |
 | `Monitor:CalendarUrlBase` | `http://192.168.1.6:8084` (ссылка на календарь цен в отчёте) |
 | `Monitor:RunOnStart` | false |
@@ -109,6 +109,6 @@ LT_LIVE_TESTS=1 dotnet test       # + живые проверки против a
 - `src/TourMonitor/Camoufox/` — установка Camoufox (скачивание из релизов), сессия
   браузера и fetch-транспорт через Playwright
 - `src/TourMonitor/Storage/PriceStore.cs` — SQLite: история цен, ежедневные минимумы
-- `src/TourMonitor/Jobs/DailyScanJob.cs` — сам скан: 150 дат × отели из конфига, параллельно
+- `src/TourMonitor/Jobs/DailyScanJob.cs` — сам скан: 365 дат × отели из конфига, параллельно
 - `src/TourMonitor/Notifications/` — Telegram и сборка отчёта
 - `tests/TourMonitor.Tests/` — юнит- и интеграционные тесты
