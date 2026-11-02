@@ -22,6 +22,8 @@ public sealed class HotelOptions
     public string ToCountry { get; set; } = "";
     /// <summary>Количество ночей для отеля.</summary>
     public int Nights { get; set; } = 9;
+    /// <summary>Присылать только туры с прямыми перелётами (без пересадок).</summary>
+    public bool DirectFlightsOnly { get; set; }
 }
 
 public sealed class MonitorOptions

@@ -107,6 +107,50 @@ public sealed class RoomRatesFilters
     public List<object> PaymentBenefits { get; set; } = new();
 }
 
+/// <summary>
+/// Запрос предложений по отелю с фильтрами туров. В отличие от устаревшего
+/// /hotel_search/room_rates поддерживает фильтр <c>direct_flight</c>.
+/// </summary>
+public sealed class MultiHotelRoomsRequest
+{
+    [JsonPropertyName("request_ids")]
+    public List<string> RequestIds { get; set; } = new();
+
+    [JsonPropertyName("filters")]
+    public TourFilters Filters { get; set; } = new();
+
+    [JsonPropertyName("hotel_id")]
+    public string HotelId { get; set; } = "";
+
+    // Новый endpoint исторически ожидает camelCase именно для этого поля.
+    [JsonPropertyName("centerNightsCount")]
+    public int CenterNightsCount { get; set; }
+}
+
+public sealed class TourFilters
+{
+    [JsonPropertyName("operators")]
+    public List<int> Operators { get; set; } = new();
+
+    [JsonPropertyName("meals")]
+    public List<string> Meals { get; set; } = new();
+
+    [JsonPropertyName("free_cancel")]
+    public bool FreeCancel { get; set; }
+
+    [JsonPropertyName("direct_flight")]
+    public bool DirectFlight { get; set; }
+
+    [JsonPropertyName("confirmability")]
+    public int? Confirmability { get; set; }
+
+    [JsonPropertyName("payment_benefits")]
+    public List<int> PaymentBenefits { get; set; } = new();
+
+    [JsonPropertyName("travel_benefits")]
+    public List<int> TravelBenefits { get; set; } = new();
+}
+
 public sealed class RoomRatesResponse
 {
     [JsonPropertyName("success")]

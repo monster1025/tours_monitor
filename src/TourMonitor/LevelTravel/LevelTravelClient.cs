@@ -54,6 +54,23 @@ public sealed class LevelTravelClient
         return await PostAsync<RoomRatesResponse>("/hotel_search/room_rates", body, ct);
     }
 
+    /// <summary>
+    /// Предложения только с прямыми перелётами. Используется более новый endpoint
+    /// /search/multi_hotel_rooms: старый /hotel_search/room_rates игнорирует direct_flight.
+    /// </summary>
+    public async Task<RoomRatesResponse> GetDirectFlightRoomRatesAsync(
+        string hotelId, string requestId, int nights, CancellationToken ct = default)
+    {
+        var body = new MultiHotelRoomsRequest
+        {
+            RequestIds = { requestId },
+            HotelId = hotelId,
+            CenterNightsCount = nights,
+            Filters = new TourFilters { DirectFlight = true },
+        };
+        return await PostAsync<RoomRatesResponse>("/search/multi_hotel_rooms", body, ct);
+    }
+
     /// <summary>Ожидает завершения поиска: completeness = 100 или все операторы в терминальном статусе.</summary>
     public async Task<SearchStatus> WaitForSearchAsync(string requestId, int pollIntervalSeconds, int timeoutSeconds, CancellationToken ct = default)
     {

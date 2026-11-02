@@ -124,15 +124,19 @@ public sealed class DailyScanJob
             var status = await _client.WaitForSearchAsync(
                 requestId, _options.PollIntervalSeconds, _options.SearchTimeoutSeconds, ct);
 
-            var rates = await _client.GetRoomRatesAsync(hotel.Id.ToString(), requestId, ct);
+            var rates = hotel.DirectFlightsOnly
+                ? await _client.GetDirectFlightRoomRatesAsync(hotel.Id.ToString(), requestId, hotel.Nights, ct)
+                : await _client.GetRoomRatesAsync(hotel.Id.ToString(), requestId, ct);
             var offers = rates.Success
                 ? FlattenOffers(hotel.Id, dateKey, rates)
                 : new List<StoredOffer>();
 
             if (offers.Count == 0)
             {
-                _logger.LogInformation("Отель {Hotel} на {Date}: туров нет (статус: {Status})",
-                    hotel.Name, dateKey, string.Join(",", status.Status?.Values.Distinct() ?? Array.Empty<string>()));
+                _logger.LogInformation("Отель {Hotel} на {Date}: туров нет{Direct} (статус: {Status})",
+                    hotel.Name, dateKey,
+                    hotel.DirectFlightsOnly ? " (фильтр: только прямые перелёты)" : "",
+                    string.Join(",", status.Status?.Values.Distinct() ?? Array.Empty<string>()));
             }
 
             await _store.SaveScanAsync(hotel.Id, dateKey, todayKey, offers, ct);

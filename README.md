@@ -60,6 +60,7 @@ dotnet run --project src/TourMonitor -- Monitor__RunOnStart=true \
 |---|---|
 | `Telegram:BotToken`, `Telegram:ChatId` | пусто (отчёт не отправляется) |
 | `Monitor:Hotels` | Sunrise Tucana 9099454, Posh Club 9151153, Riu Sri Lanka 9067553 |
+| `Monitor:Hotels[].DirectFlightsOnly` | false (true — только туры с прямыми перелётами) |
 | `Monitor:Adults`, `Monitor:KidsAges` | 2, `[5]` |
 | `Monitor:DateRangeDays` | 365 |
 | `Monitor:StartOffsetDays` | 0 (окно начинается с сегодняшнего дня) |
@@ -78,6 +79,12 @@ JS-бандла сайта; менять не нужно.
 
 У каждого отеля (`Monitor:Hotels`) свои направление и ночи: `ToCity`, `ToCountry`, `Nights`
 (например, Riu Sri Lanka — `"ToCity": "Sri Lanka", "ToCountry": "LK", "Nights": 9`).
+
+Флаг `DirectFlightsOnly` у отеля оставляет только туры с прямыми перелётами (без пересадок):
+
+```json
+{ "Id": 9099454, "Name": "Sunrise Tucana Resort", "ToCity": "Makadi Bay", "ToCountry": "EG", "Nights": 9, "DirectFlightsOnly": true }
+```
 
 ## Docker
 
@@ -104,8 +111,9 @@ LT_LIVE_TESTS=1 dotnet test       # + живые проверки против a
 ## Структура
 
 - `src/TourMonitor/LevelTravel/` — подпись (`SignHelper`), расшифровка (`LevelTravelCrypto`,
-  XSalsa20-Poly1305 + zlib), клиент `multi_enqueue`/`status`/`room_rates` поверх
-  транспорта `IApiTransport` (браузер Camoufox)
+  XSalsa20-Poly1305 + zlib), клиент `multi_enqueue`/`status`/`room_rates` (и
+  `multi_hotel_rooms` — для фильтра прямых перелётов) поверх транспорта `IApiTransport`
+  (браузер Camoufox)
 - `src/TourMonitor/Camoufox/` — установка Camoufox (скачивание из релизов), сессия
   браузера и fetch-транспорт через Playwright
 - `src/TourMonitor/Storage/PriceStore.cs` — SQLite: история цен, ежедневные минимумы

@@ -85,6 +85,30 @@ public class SignTests
         Assert.Equal("afaac79c2e0c81be5ce10fd584cc3d44", sign);
     }
 
+    /// <summary>
+    /// POST /search/multi_hotel_rooms с фильтром direct_flight — эталон посчитан
+    /// тем же алгоритмом, что используется веб-клиентом (запрос проверен живым API).
+    /// </summary>
+    [Fact]
+    public void PostMultiHotelRoomsSign_WithDirectFlightFilter_MatchesGolden()
+    {
+        var body = new MultiHotelRoomsRequest
+        {
+            RequestIds = { "request-1" },
+            HotelId = "9099454",
+            CenterNightsCount = 9,
+            Filters = new TourFilters { DirectFlight = true },
+        };
+
+        var sign = SignHelper.Compute(
+            "/search/multi_hotel_rooms",
+            LevelTravelClient.GetSignValues(body),
+            TestData.ApiKey,
+            TestData.SignSalt);
+
+        Assert.Equal("9983947139859e46401bf301fb33a83d", sign);
+    }
+
     /// <summary>Знак не зависит от порядка параметров (JS-клиент сортирует значения).</summary>
     [Fact]
     public void Compute_IsOrderIndependent()
